@@ -22,8 +22,6 @@ collapse_counts <- function (counts_mat, meta_data, varnames, min_cells_per_grou
     hash <- factor(sprintf("sample_%d", as.integer(hash)))
     meta_data <- meta_data[idx_keep, ]
     counts_mat <- counts_mat[, idx_keep]
-    design_collapsed <- data.frame(meta_data)[, varnames, drop = FALSE] %>% 
-        cbind(sample_id = hash) %>% unique()
     design_collapsed <- data.table(meta_data)[, varnames, drop = FALSE, 
         with = FALSE][, `:=`(sample_id, hash)][, `:=`(N, .N), 
         by = sample_id][N >= min_cells_per_group] %>% unique() %>% 
